@@ -11,6 +11,18 @@ if (!isset($_SESSION['UserID'])) {
     exit();
 }
 
+// Cek jika ada permintaan untuk logout
+if (isset($_GET['action']) && $_GET['action'] === 'logout') {
+
+    // Hapus semua data sesi
+    session_unset(); 
+    session_destroy(); // Hancurkan sesi
+
+    // Redirect ke halaman login
+    header("Location: ../../index.php"); 
+    exit(); // Pastikan untuk menghentikan eksekusi setelah redirect
+}
+
 // Inisialisasi database dan model Album
 $db = new Database();
 $albumModel = new Album($db->getConnection());
@@ -19,13 +31,14 @@ $fotoModel = new Foto($db->getConnection());
 // Ambil semua album berdasarkan UserID yang sedang login
 $userID = $_SESSION['UserID']; // Ambil UserID dari session
 $albums = $albumModel->getAllAlbumsByUser($userID); // Ambil album berdasarkan UserID
-$uploadedPhotos = $fotoModel->getPhotosByUser($userID); // Ambil foto berdasarkan UserID, default ke array kosong jika tidak ada
+$uploadedPhotos = $fotoModel->getAllPhotosByUser($userID); // Ambil foto berdasarkan UserID, default ke array kosong jika tidak ada
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Upload Foto</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
@@ -50,7 +63,7 @@ $uploadedPhotos = $fotoModel->getPhotosByUser($userID); // Ambil foto berdasarka
                         <?php if (isset($_SESSION['message'])): ?>
                             <div class="alert alert-info"><?= $_SESSION['message']; unset($_SESSION['message']); ?></div>
                         <?php endif; ?>
-                        <form action="../../controllers/C_upload.php" method="post" enctype="multipart/form-data">
+                        <form action="../controllers/C_upload.php" method="post" enctype="multipart/form-data">
                             <input type="hidden" name="action" value="upload">
                             <div class="form-group">
                                 <label for="judul">Judul Foto</label>
@@ -73,6 +86,7 @@ $uploadedPhotos = $fotoModel->getPhotosByUser($userID); // Ambil foto berdasarka
                             <div class="form-group">
                                 <label for="file">Upload Foto</label>
                                 <input type="file" class="form-control" id="file" name="file" required>
+                                <small class="text-danger">file harus berupa: *.jpg *.png</small>
                             </div>
                             <button type="submit" class="btn btn-primary">Upload</button>
                         </form>
@@ -88,6 +102,22 @@ $uploadedPhotos = $fotoModel->getPhotosByUser($userID); // Ambil foto berdasarka
                     </div>
                     <div class="card-body">
                         <div class="row">
+                             <!-- Pesan penghapusan foto -->
+                        <?php if (isset($_GET['message'])): ?>
+                        <div class="col-12">
+                        <?php
+                        // Mengamankan output pesan dari URL
+                        $message = htmlspecialchars($_GET['message']);
+                        echo "<div class='alert alert-info'>$message</div>";
+                                ?>
+                            </div>
+                        <?php endif; ?>
+                        <script>
+                        // Remove the message parameter from the URL after the page loads
+                        if (window.history.replaceState) {
+                            window.history.replaceState(null, null, window.location.pathname);
+                        }
+                        </script>
                             <?php if (!empty($uploadedPhotos)): ?>
                                 <?php foreach ($uploadedPhotos as $foto): ?>
                                     <div class="col-md-6 mb-3">
@@ -103,11 +133,17 @@ $uploadedPhotos = $fotoModel->getPhotosByUser($userID); // Ambil foto berdasarka
                                             <small class="text-muted">Diupload oleh: <?php echo htmlspecialchars($foto['Username']); ?></small>
                                             </p>
                                             <p class="card-text"><small class="text-muted">Tanggal Unggah: <?php echo htmlspecialchars($foto['TanggalUnggah']); ?></small></p>
-                                            <form action="../../controllers/C_upload.php" method="post">
+                                            <!-- Wrapper untuk Tombol Hapus dan Edit -->
+                                            <div class="button-group">
+                                            <!-- Formulir Hapus -->
+                                            <form action="../controllers/C_upload.php" method="post" style="display:inline-block;">
                                                 <input type="hidden" name="action" value="delete">
-                                                <input type="hidden" name="fotoID" value="<?= $photo['FotoID'] ?>">
+                                                <input type="hidden" name="fotoID" value="<?= $foto['FotoID'] ?>">
                                                 <button type="submit" class="btn btn-danger">Hapus</button>
-                                                </form>
+                                            </form>
+                                            <!-- Tombol Edit yang mengarahkan ke halaman edit -->
+                                            <a href="./CRUD_album/edit_foto.php?fotoID=<?= htmlspecialchars($foto['FotoID']) ?>" class="btn btn-warning">Edit</a>
+                                        </div>
                                             </div>
                                         </div>
                                     </div>

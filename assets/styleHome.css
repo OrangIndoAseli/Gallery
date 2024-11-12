@@ -83,6 +83,7 @@
     z-index: 1000; /* Agar tetap di atas elemen lain */
 }
 
+
 .bar {
     width: 30px; /* Lebar garis */
     height: 3px; /* Tinggi garis */
@@ -108,8 +109,8 @@
 
 
 .home-content {
-    margin-top: 20px; /* Tambahkan jarak vertikal dari elemen di atas */
-    padding: 20px;
+    margin-top: 30px; /* Tambahkan jarak vertikal dari elemen di atas */
+    padding: 30px;
     text-align: center;
 }
 
@@ -121,3 +122,18 @@
 .home-content p {
     color: #666;
 }
+ 
+.scrollable-row {
+    overflow-x: auto;
+    white-space: nowrap;
+    padding: 20px 0;
+}
+
+.scrollable-row .row {
+    display: inline-flex;
+}
+
+.scrollable-row .col-md-6 {
+    display: inline-block;
+}
+

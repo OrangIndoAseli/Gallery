@@ -16,6 +16,18 @@ if (!isset($_SESSION['UserID'])) {
     exit();
 }
 
+// Cek jika ada permintaan untuk logout
+if (isset($_GET['action']) && $_GET['action'] === 'logout') {
+
+    // Hapus semua data sesi
+    session_unset(); 
+    session_destroy(); // Hancurkan sesi
+
+    // Redirect ke halaman login
+    header("Location: ../../index.php"); 
+    exit(); // Pastikan untuk menghentikan eksekusi setelah redirect
+}
+
 // Inisialisasi Database dan AlbumController
 $db = new Database();
 $albumController = new C_album($db);

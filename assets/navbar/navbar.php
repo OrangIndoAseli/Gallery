@@ -1,11 +1,5 @@
 <!-- navbar.php -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark wrapper">
-    <div class="container">
-        <div class="navbar-toggle">
-            <span class="bar"></span>
-            <span class="bar"></span>
-            <span class="bar"></span>
-        </div>
         <a class="navbar-brand brand">
             <span class="firstname">My</span><span class="lastname">Gallery</span>
         </a>

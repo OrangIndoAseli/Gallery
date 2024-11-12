@@ -54,7 +54,7 @@ if ($_POST) {
             <button type="submit" class="btn btn-primary btn-block">Register</button>
         </form>
         <div class="text-center mt-3">
-            <a href="/Gallery">Already have an account? Login</a>
+            <a href="../../index.php">Already have an account? Login</a>
         </div>
         <?php if (!empty($message)): ?>
             <div class="alert alert-info mt-3"><?php echo $message; ?></div>

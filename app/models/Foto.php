@@ -36,43 +36,96 @@ class Foto {
 }
 
 // Fungsi untuk mengedit foto
-    public function editFoto($fotoID, $judul, $deskripsi) {
-    $query = "UPDATE " . $this->table_name . " SET JudulFoto = ?, DeskripsiFoto = ? WHERE FotoID = ?";
-    $stmt = $this->conn->prepare($query);
-    $stmt->bind_param("ssi", $judul, $deskripsi, $fotoID);
-    return $stmt->execute(); // Kembalikan hasil eksekusi
+public function editFoto($fotoID, $judul, $deskripsi, $albumID) {
+    // Validasi AlbumID
+    if (!$this->isAlbumIDValid($albumID)) {
+        echo "Error: Album ID tidak valid.";
+        return false;
+    }
+
+    try {
+        // Update query dengan kondisi WHERE untuk FotoID
+        $query = "UPDATE foto SET JudulFoto = :judul, DeskripsiFoto = :deskripsi, AlbumID = :albumID WHERE FotoID = :fotoID";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(":judul", $judul);
+        $stmt->bindParam(":deskripsi", $deskripsi);
+        $stmt->bindParam(":albumID", $albumID, PDO::PARAM_INT);
+        $stmt->bindParam(":fotoID", $fotoID, PDO::PARAM_INT); // Bind FotoID
+        $stmt->execute();
+        return true;
+    } catch (PDOException $e) {
+        // Tangkap dan tampilkan pesan kesalahan
+        echo "Error: " . $e->getMessage();
+        return false;
+    }
 }
+
+// Fungsi untuk memvalidasi AlbumID
+private function isAlbumIDValid($albumID) {
+    $query = "SELECT COUNT(*) FROM album WHERE AlbumID = :albumID";
+    $stmt = $this->conn->prepare($query);
+    $stmt->bindParam(":albumID", $albumID, PDO::PARAM_INT);
+    $stmt->execute();
+    return $stmt->fetchColumn() > 0; // Mengembalikan true jika AlbumID valid
+}
+
 
 // Fungsi untuk menghapus foto
-    public function deleteFoto($fotoID) {
-    $query = "DELETE FROM " . $this->table_name . " WHERE FotoID = ?";
+public function deletefoto($fotoID, $userID) {
+    // Query to delete only if the FotoID and UserID match the logged-in user
+    $query = "DELETE FROM " . $this->table_name . " WHERE FotoID = :fotoID AND UserID = :userID";
     $stmt = $this->conn->prepare($query);
-    $stmt->bind_param("i", $fotoID);
-    return $stmt->execute(); // Kembalikan hasil eksekusi
+    
+    if ($stmt) {
+        // Bind both fotoID and userID to ensure the user owns the photo
+        $stmt->bindParam(":fotoID", $fotoID, PDO::PARAM_INT);
+        $stmt->bindParam(":userID", $userID, PDO::PARAM_INT);
+        
+        // Execute and return the result
+        return $stmt->execute();
+    } else {
+        echo "Failed to prepare statement: " . implode(", ", $this->conn->errorInfo());
+        return false;
+    }
 }
 
-// Contoh metode dalam model Foto
-public function getPhotosByUser($userID) {
+
+public function getAllPhotos() {
+    $query = "SELECT f.FotoID, f.JudulFoto, f.DeskripsiFoto, f.TanggalUnggah, f.LokasiFile, 
+                     a.NamaAlbum, u.Username
+              FROM foto AS f
+              JOIN album AS a ON f.AlbumID = a.AlbumID
+              JOIN user AS u ON f.UserID = u.UserID";
+    
+    $stmt = $this->conn->prepare($query);
+    $stmt->execute();
+    return $stmt->fetchAll(PDO::FETCH_ASSOC); // Mengambil semua foto tanpa filter user
+}
+
+
+public function getAllPhotosByUser($userID) {
     $query = "SELECT f.FotoID, f.JudulFoto, f.DeskripsiFoto, f.TanggalUnggah, f.LokasiFile, 
                      a.NamaAlbum, u.Username
               FROM foto AS f
               JOIN album AS a ON f.AlbumID = a.AlbumID
               JOIN user AS u ON f.UserID = u.UserID
-              WHERE f.UserID = :UserID";
+              WHERE f.UserID = :userID";
     $stmt = $this->conn->prepare($query);
-    $stmt->bindParam(':UserID', $userID, PDO::PARAM_INT);
+    $stmt->bindParam(':userID', $userID, PDO::PARAM_INT);
     $stmt->execute();
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);  // Use fetchAll() for multiple results
 }
 
 
-public function getAlbumsByUser($userID) {
-    $query = "SELECT * FROM album WHERE UserID = ?";
-    $stmt = $this->conn->prepare($query);
-    $stmt->bind_param("i", $userID);
-    $stmt->execute();
-    return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
-}
+    // Fungsi untuk mengambil album berdasarkan UserID
+    public function getAlbumsByUser($userID) {
+        $query = "SELECT * FROM album WHERE UserID = :userID";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(":userID", $userID, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
 
 // Fungsi lain yang diperlukan (seperti mendapatkan foto) bisa ditambahkan di sini
 }

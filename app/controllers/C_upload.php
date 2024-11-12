@@ -18,6 +18,21 @@ class C_upload {
         $this->foto = new Foto($db->getConnection());
     }
 
+    // Menambahkan metode untuk mendapatkan album berdasarkan UserID
+    public function getAlbumsByUser($userID) {
+    return $this->foto->getAlbumsByUser($userID); // Memanggil method di model Foto
+    }
+
+// Menambahkan metode untuk mendapatkan foto berdasarkan FotoID dan UserID
+    public function getAllPhotosByUser($fotoID, $userID) {
+    return $this->foto->getAllPhotosByUser($fotoID, $userID); // Memanggil method di model Foto
+    }
+
+    public function getAllPhotos($fotoID, $userID) {
+    return $this->foto->getAllPhotos($fotoID, $userID); // Memanggil method di model Foto
+    }
+
+
     // Fungsi untuk mengupload foto
     public function upload($judul, $deskripsi, $albumID, $userID) {
         // Validasi input
@@ -47,27 +62,50 @@ class C_upload {
 
     // Fungsi untuk mengedit foto
     public function edit() {
+        // Memeriksa apakah permintaan adalah POST dan action adalah 'edit'
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'edit') {
+            // Mengambil data dari form
             $fotoID = $_POST['fotoID'] ?? '';
             $judul = $_POST['judul'] ?? '';
             $deskripsi = $_POST['deskripsi'] ?? '';
-
-            if ($this->foto->editFoto($fotoID, $judul, $deskripsi)) {
-                header("Location: ../views/photo_list_view.php?message=" . urlencode("Foto berhasil diubah!"));
+            $albumID = $_POST['albumID'] ?? '';
+    
+            // Validasi input
+            if (empty($fotoID) || empty($judul) || empty($deskripsi) || empty($albumID)) {
+                header("Location: ../views/upload_views.php?message=" . urlencode("Semua field harus diisi."));
+                exit();
+            }
+    
+            // Memanggil metode editFoto untuk mengupdate foto
+            if ($this->foto->editFoto($fotoID, $judul, $deskripsi, $albumID)) {
+                header("Location: ../views/upload_views.php?message=" . urlencode("Caption berhasil diubah!"));
+                exit();
             } else {
-                header("Location: ../views/photo_list_view.php?message=" . urlencode("Gagal mengubah foto."));
+                header("Location: ../views/upload_views.php?message=" . urlencode("Gagal mengubah Caption"));
+                exit();
             }
         }
     }
+    
 
     // Fungsi untuk menghapus foto
     public function delete() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'delete') {
-            $fotoID = $_POST['fotoID'] ?? '';
-            if ($this->foto->deleteFoto($fotoID)) {
-                header("Location: ../views/photo_list_view.php?message=" . urlencode("Foto berhasil dihapus!"));
+            session_start(); // Ensure session is started to access $_SESSION variables
+            
+            // Check if user is logged in and has a valid UserID
+            if (isset($_SESSION['UserID'])) {
+                $userID = $_SESSION['UserID']; // Retrieve the logged-in user’s UserID
+                $fotoID = $_POST['fotoID'] ?? ''; // Retrieve fotoID from the form
+                
+                // Call deleteFoto with both fotoID and userID to validate ownership
+                if ($this->foto->deleteFoto($fotoID, $userID)) {
+                    header("Location: ../views/upload_views.php?message=" . urlencode("Foto berhasil dihapus!"));
+                } else {
+                    header("Location: ../views/upload_views.php?message=" . urlencode("Gagal menghapus foto. Anda tidak memiliki izin."));
+                }
             } else {
-                header("Location: ../views/photo_list_view.php?message=" . urlencode("Gagal menghapus foto."));
+                header("Location: ../../index.php"); // Redirect to login page if not logged in
             }
         }
     }
