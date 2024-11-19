@@ -68,30 +68,33 @@ class C_upload {
             $fotoID = $_POST['fotoID'] ?? '';
             $judul = $_POST['judul'] ?? '';
             $deskripsi = $_POST['deskripsi'] ?? '';
-            $albumID = $_POST['albumID'] ?? '';
+            $albumID = $_POST['albumID'] ?? ''; // Pastikan ini sesuai dengan name attribute pada form album
     
-            // Validasi input
+            // Validasi input, pastikan semua field terisi
             if (empty($fotoID) || empty($judul) || empty($deskripsi) || empty($albumID)) {
+                // Mengarahkan ke halaman upload dengan pesan error jika ada field yang kosong
                 header("Location: ../views/upload_views.php?message=" . urlencode("Semua field harus diisi."));
                 exit();
             }
     
             // Memanggil metode editFoto untuk mengupdate foto
             if ($this->foto->editFoto($fotoID, $judul, $deskripsi, $albumID)) {
+                // Jika berhasil, mengarahkan kembali dengan pesan sukses
                 header("Location: ../views/upload_views.php?message=" . urlencode("Caption berhasil diubah!"));
                 exit();
             } else {
+                // Jika gagal, mengarahkan kembali dengan pesan gagal
                 header("Location: ../views/upload_views.php?message=" . urlencode("Gagal mengubah Caption"));
                 exit();
             }
         }
     }
     
+    
 
     // Fungsi untuk menghapus foto
     public function delete() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'delete') {
-            session_start(); // Ensure session is started to access $_SESSION variables
             
             // Check if user is logged in and has a valid UserID
             if (isset($_SESSION['UserID'])) {

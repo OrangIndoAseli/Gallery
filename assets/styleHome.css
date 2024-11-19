@@ -1,139 +1,55 @@
-/* style.css */
-
-/* Gaya untuk seluruh halaman dan navbar */
-*, html, body {
-    margin: 0;
-    padding: 0;
-    font-family: "Roboto", sans-serif;
+.comments-section {
+    max-height: 150px;
+    overflow-y: auto;
+    margin-bottom: 10px;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 5px;
 }
 
-.wrapper {
-    box-shadow: 0 7px 15px 0 rgba(0, 0, 0, 0.5);
-    background-color: #222;
+.comment-item {
+    border-bottom: 1px solid #ddd;
+    padding: 5px 0;
+    margin-bottom: 5px;
 }
 
-.brand {
+.comment-item:last-child {
+    border-bottom: none;
+}
+
+.btn-close {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    color: red;
+    cursor: pointer;
+}
+
+.btn-close:hover {
+    color: darkred;
+}
+
+.like-button {
+    background: transparent;
+    border: none;
+    color: gray; /* Default warna ikon */
+    font-size: 16px;
+    cursor: pointer;
     display: flex;
     align-items: center;
-    font-size: 1.5em;
-    padding: 0;
-    color: white;
-    text-transform: capitalize;
+    gap: 5px;
 }
 
-.firstname {
-    color: white;
-    font-weight: 700;
+/* Gaya ikon love saat belum di-like */
+.like-button .fa-heart {
+    transition: color 0.3s ease;
 }
 
-.lastname {
-    color: crimson;
-    font-weight: 400;
-    padding-left: 4px;
-}
-
-/* Gaya navbar dan link */
-.navigation {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    flex: 1;
-    margin-left: auto;
-}
-
-.nav-link {
-    color: white;
-    font-size: 1rem;
-    margin-right: 15px;
-    text-transform: capitalize;
-    transition: all .3s ease-in-out;
-}
-
-.nav-link:hover {
-    color: crimson;
-}
-
-.nav-item {
-    list-style: none;
-}
-
-.nav-item.logout {
-    background-color: red; /* Background merah untuk item logout */
-    border-radius: 6px; /* Untuk memberi efek sudut melingkar */
-}
-
-.nav-item.logout:hover {
-    background-color: darkred; /* Warna lebih gelap saat hover */
-}
-
-.nav-item.logout .nav-link {
-    color: white; /* Mengatur warna teks menjadi putih */
-    padding: 10px 15px; /* Memberikan padding agar terlihat lebih baik */
+/* Gaya tombol saat di-like */
+.like-button.liked .fa-heart {
+    color: red; /* Ubah warna ikon love menjadi merah saat di-like */
 }
 
 
-/* Menambahkan gaya responsif untuk gambar atau elemen kecil lainnya di navbar */
-.navbar-toggle {
-    display: flex;
-    flex-direction: column; /* Vertikal */
-    cursor: pointer; /* Pointer saat hover */
-    position: absolute; /* Posisi absolut */
-    left: 20px; /* Jarak dari sisi kiri */
-    top: 15px; /* Jarak dari atas */
-    z-index: 1000; /* Agar tetap di atas elemen lain */
-}
-
-
-.bar {
-    width: 30px; /* Lebar garis */
-    height: 3px; /* Tinggi garis */
-    background-color: white; /* Warna garis */
-    margin: 3px 0; /* Jarak antar garis */
-    transition: 0.4s; /* Transisi untuk animasi */
-}
-
-/* Gaya tambahan untuk navbar */
-.wrapper {
-    box-shadow: 0 7px 15px 0 rgba(0, 0, 0, 0.5);
-    background-color: #222;
-}
-
-.brand {
-    display: flex;
-    align-items: center;
-    font-size: 1.5em;
-    padding-left: 60px; /* Memberikan ruang untuk toggle di sebelah kiri */
-    color: white;
-    text-transform: capitalize;
-}
-
-
-.home-content {
-    margin-top: 30px; /* Tambahkan jarak vertikal dari elemen di atas */
-    padding: 30px;
-    text-align: center;
-}
-
-.home-content h1 {
-    color: #333;
-    margin-bottom: 10px; /* Tambahkan jarak antara judul dan paragraf */
-}
-
-.home-content p {
-    color: #666;
-}
- 
-.scrollable-row {
-    overflow-x: auto;
-    white-space: nowrap;
-    padding: 20px 0;
-}
-
-.scrollable-row .row {
-    display: inline-flex;
-}
-
-.scrollable-row .col-md-6 {
-    display: inline-block;
-}
 

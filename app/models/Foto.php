@@ -104,6 +104,7 @@ public function getAllPhotos() {
 
 
 public function getAllPhotosByUser($userID) {
+    // Query to get all photos based on userID
     $query = "SELECT f.FotoID, f.JudulFoto, f.DeskripsiFoto, f.TanggalUnggah, f.LokasiFile, 
                      a.NamaAlbum, u.Username
               FROM foto AS f
@@ -111,10 +112,29 @@ public function getAllPhotosByUser($userID) {
               JOIN user AS u ON f.UserID = u.UserID
               WHERE f.UserID = :userID";
     $stmt = $this->conn->prepare($query);
+    // Bind parameter userID
     $stmt->bindParam(':userID', $userID, PDO::PARAM_INT);
     $stmt->execute();
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);  // Use fetchAll() for multiple results
+    // Fetch all photos for the given userID
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);  // Retrieve all photos
 }
+
+public function getPhotosByUser($userID, $fotoID) {
+    $query = "SELECT f.FotoID, f.JudulFoto, f.DeskripsiFoto, f.TanggalUnggah, f.LokasiFile, 
+                     a.NamaAlbum, u.Username
+              FROM foto AS f
+              JOIN album AS a ON f.AlbumID = a.AlbumID
+              JOIN user AS u ON f.UserID = u.UserID
+              WHERE f.FotoID = :fotoID AND f.UserID = :userID";
+    
+    $stmt = $this->conn->prepare($query);
+    $stmt->bindParam(':fotoID', $fotoID, PDO::PARAM_INT);
+    $stmt->bindParam(':userID', $userID, PDO::PARAM_INT);
+    $stmt->execute();
+
+    return $stmt->fetch(PDO::FETCH_ASSOC); // Fetch single photo data
+}
+
 
 
     // Fungsi untuk mengambil album berdasarkan UserID
@@ -125,6 +145,32 @@ public function getAllPhotosByUser($userID) {
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function getLikeCount($fotoID) {
+        $query = "SELECT COUNT(*) AS like_count FROM likefoto WHERE FotoID = :fotoID";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':fotoID', $fotoID);
+        $stmt->execute();
+
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result['like_count'];
+    }
+
+    public function getLikeDate($fotoID) {
+        $query = "SELECT TanggalLike FROM likefoto WHERE FotoID = ? ORDER BY TanggalLike DESC LIMIT 1";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute([$fotoID]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        // Check if the result is not false before accessing the value
+        if ($result !== false) {
+            return $result['TanggalLike'];
+        } else {
+            // Handle the case where no result is found (e.g., return null or an appropriate default value)
+            return null;  // Or you could return an empty string or another default value
+        }
+    }
+    
 
 
 // Fungsi lain yang diperlukan (seperti mendapatkan foto) bisa ditambahkan di sini

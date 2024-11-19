@@ -87,6 +87,7 @@ class User {
 
         return $albums;
     }
+    
     public function setProperties($data) {
         $this->UserID = $data['UserID'];
         $this->Username = $data['Username'];

@@ -46,8 +46,9 @@ $albums = $albumController->getAllByUser($userID);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kelola Album</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../../assets/styleAlbumKU.css"> <!-- Link ke file CSS terpisah -->
-    <link rel="stylesheet" href="../../assets/styleHome.css"> <!-- Link ke file CSS terpisah -->
+    <link rel="stylesheet" href="../../assets/styleNav.css"> <!-- Link ke file CSS terpisah -->
 </head>
 <body>
 

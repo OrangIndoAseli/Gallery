@@ -1,1 +1,30 @@
-   
+/* Prevent scrollbars */
+html, body {
+  height: 100%;
+  margin: 0;
+  overflow: hidden; /* Disable scrolling */
+}
+
+/* Ensure the container fills the entire height */
+.container-fluid {
+  height: 100%;
+}
+
+/* Style for the image on the left side */
+.col-md-6.p-0 img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Style for the card to make it responsive */
+.card {
+  width: 100%;
+  max-width: 400px;
+}
+
+/* Center the entire content vertically and horizontally */
+.vh-100 {
+  min-height: 100vh;
+}

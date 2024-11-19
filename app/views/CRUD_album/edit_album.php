@@ -31,7 +31,6 @@ if (!$album) {
     <link rel="stylesheet" href="../../../assets/styleHome.css">
 </head>
 <body>
-    <?php include '../../../assets/navbar/navbar.php'; ?>
     
     <div class="container mt-5">
         <h2>Edit Album</h2>
