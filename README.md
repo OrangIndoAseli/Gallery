@@ -1,2 +1,2 @@
 # Gallery-
-Pengerjaan Ujikom Menggunakan php oop
+Pengerjaan aplikasi ini Menggunakan php oop
